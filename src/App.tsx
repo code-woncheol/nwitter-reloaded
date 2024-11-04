@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import LoadingScreen from './components/loading-screen';
 import { auth } from './firebase';
 import ProtectedRoute from './components/protected-route';
+import ResetPassword from './routes/reset-password';
 
 const router = createBrowserRouter([
     {
@@ -21,7 +22,7 @@ const router = createBrowserRouter([
         ),
         children: [
             {
-                path: '',
+                path: '/',
                 element: <Home />,
             },
             {
@@ -38,23 +39,53 @@ const router = createBrowserRouter([
         path: '/create-account',
         element: <CreateAccount />,
     },
+    {
+        path: '/reset-password',
+        element: <ResetPassword />,
+    },
 ]);
 
 const GlobalStyles = createGlobalStyle`
   ${reset};
+  
+  @font-face {
+    font-family: 'SDSamliphopangche_Basic';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts-20-12@1.0/SDSamliphopangche_Basic.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+    @font-face {
+  font-family: 'Noto Sans Japanese';
+  font-style: normal;
+  font-weight: 100;
+  src: local('Noto Sans Japanese'),
+       url(//fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Thin.woff2) format('woff2'),
+       url(//fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Thin.woff) format('woff'),
+       url(//fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Thin.otf) format('opentype');
+}
+
+
+
+
   * {
     box-sizing: border-box;
+    font-family: 'SDSamliphopangche_Basic','Noto Sans Japanese', sans-serif; /* 기본 폰트 설정 */
+
   }
   body{
     background-color: black;
     color: white;
+    font-family: 'SDSamliphopangche_Basic','Noto Sans Japanese', sans-serif; /* 기본 폰트 설정 */
+
   }
-`;
+    `;
 
 const Wrapper = styled.div`
     height: 100vh;
     display: flex;
     justify-content: center;
+
+    gap: 20px; /* 요소 간의 간격 조정 */
 `;
 
 function App() {

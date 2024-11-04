@@ -1,12 +1,20 @@
-import { auth } from '../firebase';
+import PostTweetForm from '../components/post-tweet-form';
+import Timeline from '../components/timeline';
+import { styled } from 'styled-components';
 
+const Wrapper = styled.div`
+    display: grid;
+    gap: 50px;
+    overflow-y: scroll;
+    grid-template-rows: 1fr 5fr;
+    m
+`;
 export default function Home() {
-    const logOut = () => {
-        auth.signOut();
-    };
+    console.log('Home component is rendering'); // 렌더링 확인용 콘솔 로그
     return (
-        <h1>
-            <button onClick={logOut}>Log out</button>
-        </h1>
+        <Wrapper>
+            <PostTweetForm />
+            <Timeline />
+        </Wrapper>
     );
 }

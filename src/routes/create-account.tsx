@@ -1,59 +1,30 @@
 import { useState } from 'react';
-import styled from 'styled-components';
 import { auth } from '../firebase';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth/cordova';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { Link, useNavigate } from 'react-router-dom';
+// import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { FirebaseError } from 'firebase/app';
+import { Error, Form, Input, Swithcer, Title, Wrapper } from '../components/auth-components';
+import GithubButton from '../components/github-btn';
 
-const Wrapper = styled.div`
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 420px;
-    padding: 50px 0px;
-`;
-const Title = styled.h1`
-    font-size: 42px;
-`;
-const Form = styled.form`
-    margin-top: 50px;
-    dispaly: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-`;
-const Input = styled.input`
-    padding: 10px 20px;
-    border-radius: 50px;
-    border: none;
-    width: 100%;
-    margin-bottom: 10px;
-    font-size: 16px;
-    &[type='submit'] {
-        cursor: pointer;
-        &:hover {
-            opacity: 0.8;
-        }
-    }
-`;
-
-const Error = styled.span`
-    font-weight: 600;
-    color: tomato;
-`;
+import { useTranslation } from 'react-i18next';
 
 export default function CreateAccount() {
     const navigate = useNavigate();
+    const { t } = useTranslation(); // 다국어 지원을 위해 useTranslation 훅 사용
     const [isLoading, setLoading] = useState(false);
     const [name, SetName] = useState('');
     const [email, SetEmail] = useState('');
     const [password, SetPassword] = useState('');
     const [error, setError] = useState('');
+
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setError('');
         if (isLoading || name === '' || email === '' || password === '') return;
-        setLoading(true);
+
         try {
+            setLoading(true);
             const credentials = await createUserWithEmailAndPassword(auth, email, password);
             console.log(credentials.user);
             await updateProfile(credentials.user, {
@@ -62,6 +33,9 @@ export default function CreateAccount() {
             navigate('/');
             //
         } catch (e) {
+            if (e instanceof FirebaseError) {
+                setError(e.message);
+            }
             console.log(e);
             //setError
         } finally {
@@ -83,21 +57,25 @@ export default function CreateAccount() {
     };
     return (
         <Wrapper>
-            <Title>Join x</Title>
+            <Title>{t('joinKawaiinu')}</Title>
             <Form onSubmit={onSubmit}>
-                <Input name="name" onChange={onChange} value={name} placeholder="Name" type="text" required />
-                <Input name="email" onChange={onChange} value={email} placeholder="Email" type="email" required />
+                <Input name="name" onChange={onChange} value={name} placeholder={t('name')} type="text" required />
+                <Input name="email" onChange={onChange} value={email} placeholder={t('email')} type="email" required />
                 <Input
                     name="password"
                     onChange={onChange}
                     value={password}
-                    placeholder="Password"
+                    placeholder={t('password')} // 수정된 부분
                     type="password"
                     required
                 />
-                <Input type="submit" value={isLoading ? 'Loading...' : 'Create Account'} />
+                <Input type="submit" value={isLoading ? t('loading') : t('createAccount')} />
             </Form>
             {error !== '' ? <Error>{error}</Error> : null}
+            <Swithcer>
+                {t('alreadyHaveAccount')} <Link to="/login">{t('logIn')} &rarr;</Link>
+            </Swithcer>
+            <GithubButton />
         </Wrapper>
     );
 }
